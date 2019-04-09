@@ -1,6 +1,6 @@
 # pct-utils
 
-PCT utilities, intended for mostly .p files to use with PCTRun
+PCT (https://github.com/Riverside-Software/pct) utilities, intended for mostly .p files to use with PCTRun
 
 ## Introduction
 
