@@ -82,7 +82,7 @@ procedure Main:
             when 7
             then run StStreamWriteLine(substitute ('a &1', lAiExtentDirectory)).
             when 6
-            then run StStreamWriteLine(substitute ('d "&1":&2,&3,&4 &5',
+            then run StStreamWriteLine(substitute ('d "&1":&2,&3;&4 &5',
                 _Area._Area-name, _Area._Area-number, integer(exp(2, _Area._Area-recbits)), _Area._Area-clustersize, lDataExtentDirectory)).
             otherwise put unformatted
                 substitute ('Unknown _Area-type &1 on "&2":&3 ignored', _Area._Area-type, _Area._Area-name, _Area._Area-number)
