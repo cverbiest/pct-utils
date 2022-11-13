@@ -1,6 +1,6 @@
 # pct-utils
 
-PCT (https://github.com/Riverside-Software/pct) utilities, intended for mostly .p files to use with PCTRun
+[PCT](<https://github.com/Riverside-Software/pct>) utilities, intended for mostly .p files to use with PCTRun
 
 ## Introduction
 
@@ -19,3 +19,11 @@ A template to create a new PCT run procedure
 ### database/generate_st.p
 
 Generates a .st file from an database connection
+
+### vscode/generate_riverside_vscodeconfig.p
+
+Uses current ABL session to generate config files for vscode  [Riverside](https://marketplace.visualstudio.com/publishers/RiversideSoftware) OpenEdge ABL plugin.
+
+* adds dbconnections for currently connected databases
+* adds propath entries
+
