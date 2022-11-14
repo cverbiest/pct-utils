@@ -28,11 +28,14 @@ define variable aCount as integer no-undo.
 define variable lConfigFile as character no-undo.
 define variable TargetDir as character no-undo format "x(65)".
 define variable ApplDir as character no-undo format "x(65)".
+define variable CablProfileBackup as character no-undo format "x(65)" initial "C:\Users\cvb\Downloads\oe-ccesmarttools-70105.xml".
 
 file-information:file-name = ".".
 TargetDir = file-information:full-pathname.
 
-if not session:batch-mode then update TargetDir.
+if not session:batch-mode
+then update TargetDir CablProfileBackup.
+
 if TargetDir > ""
 then /* Ok **/.
 else TargetDir = ".".
@@ -65,6 +68,7 @@ if opsys ne "unix"
 then ConfigJson:Add("extraParameters", "-basekey ini").
 
 ConfigJson:Add("workingDirectory", ApplDir).
+ConfigJson:Add("numThreads", 1).
 
 PropathArray = new JsonArray () .
 ConfigJson:Add ("buildPath":U, PropathArray) .
@@ -99,7 +103,7 @@ end.
 
 
 DbArray = new JsonArray () .
-ConfigJson:Add("dbconnections", DbArray).
+ConfigJson:Add("dbConnections", DbArray).
 
 DbLoop: do Count = 1 to num-dbs:
     EntryObject = new JsonObject () .
@@ -135,6 +139,10 @@ ConfigJson:WriteFile(lConfigFile, true).
 SettingsJson = new JsonObject().
 
 SearchArray = new JsonObject () .
+SettingsJson:Add ("files.exclude":U, SearchArray) .
+SearchArray:Add("**/*.r", true).
+
+SearchArray = new JsonObject () .
 SettingsJson:Add ("search.exclude":U, SearchArray) .
 SearchArray:Add("**/.pct", true).
 SearchArray:Add("**/*.r", true).
@@ -149,8 +157,30 @@ end.
 
 SettingsJson:WriteFile(substitute ("&1/.vscode/settings.json", TargetDir), true).
 
+
 {&_proparse_ prolint-nowarn(messagekeywordmatch)}
 message
     lConfigFile skip
     substitute ("&1/.vscode/settings.json", TargetDir) skip
     .
+
+
+/**
+ * Purpose: Run the export-cabl.p procedure if found in same directory as this-procedure.
+ * Notes: All credit for that procedure to Mike Fechner
+ */
+procedure ConvertSonarProfile:
+
+    define variable lExportProcedure as character no-undo.
+
+    if CablProfileBackup > ""
+    then do:
+        lExportProcedure = replace(this-procedure:file-name, "~\", "/").
+        entry(num-entries(lExportProcedure, "/"), lExportProcedure, "/") = "export-cabl.p".
+        file-information:file-name = lExportProcedure.
+        if file-information:full-pathname > ""
+        then run value(lExportProcedure) (CablProfileBackup, substitute ("&1/.vscode/cabl.json", TargetDir)).
+        else message lExportProcedure "not found" view-as alert-box.
+    end.
+
+end procedure.

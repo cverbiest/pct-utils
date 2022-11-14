@@ -26,4 +26,3 @@ Uses current ABL session to generate config files for vscode  [Riverside](https:
 
 * adds dbconnections for currently connected databases
 * adds propath entries
-
