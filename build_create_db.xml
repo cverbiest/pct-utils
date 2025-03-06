@@ -1,0 +1,61 @@
+<project name="create_db" default="create_db" basedir="."
+    xmlns:if="ant:if"
+    xmlns:unless="ant:unless">
+
+    <!-- Taskdefs & macros -->
+    <property environment="env" />
+    <property name="DLC" value="${env.DLC}" />
+    <taskdef resource="PCT.properties"  classpath="${DLC}/pct/PCT.jar" />
+    <typedef resource="types.properties"  classpath="${DLC}/pct/PCT.jar" />
+
+    <DlcHome value="${DLC}" />
+    <property name="dbPath" value="db" />
+    <property name="dbName" value="mydb" />
+
+    <tstamp prefix="starttime" />
+
+    <target name="init">
+        <echo level="verbose">Initialize</echo>
+        <echoproperties />
+    </target>
+
+
+    <target name="create_db" description="default build target">
+        <echo level="verbose">Build</echo>
+
+        <mkdir dir="${dbPath}" />
+        <echo file="${dbPath}/${dbName}.st">b .
+d "Schema Area":6,64;1 .
+a .
+a .
+a .
+a .
+d "Data":42,128;8 .
+d "Index":43,128;64 .
+d "LOB":44,128;8 .</echo>
+        <PCTCreateDatabase dbName="${dbPath}/${dbName}" dlcHome="${env.DLC}" structFile="${dbPath}/${dbName}.st" codepage="utf" />
+        <proutil_setobjectdefaultarea dbPath="${dbPath}" dbName="${dbName}" Area="Data" Type="table" />
+        <proutil_setobjectdefaultarea dbPath="${dbPath}" dbName="${dbName}" Area="Index" Type="index" />
+        <proutil_setobjectdefaultarea dbPath="${dbPath}" dbName="${dbName}" Area="LOB" Type="lob" />
+    </target>
+
+    <macrodef name="proutil_setobjectdefaultarea">
+        <attribute name="dbPath" />
+        <attribute name="dbName"/>
+        <attribute name="Area"/>
+        <attribute name="Type"/>
+
+        <sequential>
+            <echo>DB: proutil @{dbPath}/@{dbName} -C setobjectdefaultarea @{Area} @{Type}</echo>
+            <exec executable="${DLC}/bin/_proutil" >
+                <env key="DLC" value="${DLC}" />
+                <arg value="@{dbPath}/@{dbName}" />
+                <arg value="-C" />
+                <arg value="setobjectdefaultarea" />
+                <arg value="@{Area}" />
+                <arg value="@{Type}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+</project>
